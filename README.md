@@ -1,5 +1,11 @@
-A sample command-line application with an entrypoint in `bin/`, library code
-in `lib/`, and example unit test in `test/`.
+This project is being just for studying the following topics:
+ - Clean code
+ - Clean architecture
+ - Refactoring techniques
+ - TDD
+ - and others
+ 
+It is being constructed as an exercise of Branas' "clean code and clean architecture" course.
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+Eskola is simple school application, which aims to manage enrollments, payments etc.
+
