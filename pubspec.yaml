@@ -4,11 +4,18 @@ description: A sample command-line application.
 # homepage: https://www.example.com
 
 environment:
-  sdk: '>=2.10.0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 #dependencies:
 #  path: ^1.7.0
 
+dependencies:
+
 dev_dependencies:
   pedantic: ^1.9.0
-  test: ^1.14.4
+  test: ^1.17.4
+  mocktail: ^0.1.2
+
+dependency_overrides:
+  vm_service: '7.0.0' #TODO update test package version when it stops using 6.2.0 of vm_service
+
