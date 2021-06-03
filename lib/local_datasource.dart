@@ -1,5 +1,6 @@
 //fazer retornar level, modules e classes;
 import 'package:eskola/clazz.dart';
+import 'package:eskola/enroll_student.dart';
 import 'package:eskola/level.dart';
 import 'package:eskola/module.dart';
 
@@ -13,6 +14,12 @@ abstract class LocalDatasource {
   Future<Module> getModule(String code);
 
   Future<List<Clazz>> getClazzes();
+
+  Future<List<Student>> getClazzStudents(Clazz clazz);
+
+  Future<List<Student>> getStudents();
+
+  Future<Null> enroll(EnrollRequest enrollment);
 }
 
 class LocalDatasourceImpl implements LocalDatasource {
@@ -33,6 +40,8 @@ class LocalDatasourceImpl implements LocalDatasource {
     Clazz(level: modules[1].level, module: modules[1], code: '1', capacity: 30),
     Clazz(level: modules[2].level, module: modules[2], code: '1', capacity: 30),
   ];
+
+  static final enrollments = <EnrollRequest>[];
 
   @override
   Future<List<Level>> getLevels() {
@@ -58,5 +67,24 @@ class LocalDatasourceImpl implements LocalDatasource {
   @override
   Future<int> getLastEnrolledStudentCode() {
     return Future.value(12);
+  }
+
+  @override
+  Future<List<Student>> getClazzStudents(Clazz clazz) {
+    return Future.value(
+      enrollments.where((e) => e.clazz == clazz.code).map((e) => e.student).toList(),
+    );
+  }
+
+  @override
+  Future<Null> enroll(EnrollRequest enrollment) {
+    enrollments.add(enrollment);
+    return Future.value(null);
+  }
+
+  @override
+  Future<List<Student>> getStudents() {
+    final students = enrollments.map((e) => e.student).toList();
+    return Future.value(students);
   }
 }

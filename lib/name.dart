@@ -1,13 +1,4 @@
-class InvalidName implements Exception {
-  final String msg;
-
-  InvalidName(this.msg);
-
-  @override
-  String toString() {
-    return msg;
-  }
-}
+import 'package:eskola/failure.dart';
 
 class Name {
   final String value;
@@ -20,4 +11,8 @@ class Name {
     final exp = RegExp(r'^([A-Za-z]+ )+([A-Za-z])+$');
     return exp.hasMatch(name);
   }
+}
+
+class InvalidName extends Failure {
+  InvalidName(String msg) : super(msg);
 }

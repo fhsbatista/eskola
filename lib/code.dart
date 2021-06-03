@@ -1,3 +1,5 @@
+import 'package:eskola/failure.dart';
+
 class Code {
   final String value;
 
@@ -12,13 +14,6 @@ class Code {
   }
 }
 
-class InvalidCode implements Exception {
-  final String msg;
-
-  InvalidCode(this.msg);
-
-  @override
-  String toString() {
-    return msg;
-  }
+class InvalidCode extends Failure {
+  InvalidCode(String msg) : super(msg);
 }

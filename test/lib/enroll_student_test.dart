@@ -29,25 +29,43 @@ void main() {
 
   test('should generate code for the enrolled student', () async {
     //arrange
-    final lastEnrolledStudentCode = 12;
-    when(() => repository.getLastEnrolledStudentCode())
-        .thenAnswer((_) async => lastEnrolledStudentCode);
-    final level = 'EM';
-    final module = '1';
-    final clazz = 'A';
+    final level = Level(code: 'EM', description: 'Ensino Fundamental');
+    final module = Module(
+      level: level,
+      code: '1',
+      description: '1º ano',
+      minimumAge: 5,
+      price: 100,
+    );
+    final clazz = Clazz(level: level, module: module, code: 'A', capacity: 10);
     final request = EnrollRequest(
       student: validStudent,
-      level: level,
-      module: module,
-      clazz: clazz,
+      level: level.code,
+      module: module.code,
+      clazz: clazz.code,
     );
+    final student = Student(
+      name: Name('Fernando Batista'),
+      cpf: Cpf('383.916.398-60'),
+      birthDate: DateTime(2020, 11, 8),
+    );
+    final lastEnrolledStudentCode = 12;
+    when(() => repository.getStudents()).thenAnswer((_) async => [student]);
+    when(() => repository.getLastEnrolledStudentCode())
+        .thenAnswer((_) async => lastEnrolledStudentCode);
+    when(() => repository.getModule(module.code)).thenAnswer((_) async => module);
+    when(() => repository.getClazzes()).thenAnswer((_) async => [clazz]);
+    when(() => repository.getClazzStudents(clazz)).thenAnswer((_) async => [student]);
 
     //act
     final result = await enrollStudent(request);
 
     //assert
     final currentYear = DateFormat('yyyy').format(DateTime.now());
-    expect(result, '$currentYear$level$module$clazz${lastEnrolledStudentCode + 1}');
+    expect(
+      result,
+      '$currentYear${level.code}${module.code}${clazz.code}${lastEnrolledStudentCode + 1}',
+    );
   });
 
   test('should throw InvalidAge when the age is less than minimum age', () {
@@ -78,5 +96,67 @@ void main() {
 
     //assert
     expect(() async => await enrollStudent(request), throwsA(isA<InvalidAge>()));
+  });
+
+  test('should throw OutOfCapacity when trying to enroll over class capacity', () {
+    //arrange
+    final level = Level(code: 'EF', description: 'Ensino Fundamental');
+    final module = Module(
+      level: level,
+      code: '1',
+      description: '1º ano',
+      minimumAge: 5,
+      price: 100,
+    );
+    final clazz = Clazz(level: level, module: module, code: '1', capacity: 1);
+    final student = Student(
+      name: Name('Fernando Batista'),
+      cpf: Cpf('383.916.398-60'),
+      birthDate: DateTime(1995, 11, 8),
+    );
+    final request = EnrollRequest(
+      student: student,
+      level: level.code,
+      module: module.code,
+      clazz: clazz.code,
+    );
+    when(() => repository.getLastEnrolledStudentCode()).thenAnswer((_) async => 1);
+    when(() => repository.getModule(module.code)).thenAnswer((_) async => module);
+    when(() => repository.getClazzes()).thenAnswer((_) async => [clazz]);
+    when(() => repository.getClazzStudents(clazz)).thenAnswer((_) async => [student]);
+
+    //assert
+    expect(() async => await enrollStudent(request), throwsA(isA<OutOfCapacity>()));
+  });
+  test('should throw StudentAlreadyEnrolled when trying to enroll a duplicated student', () {
+    //arrange
+    final level = Level(code: 'EF', description: 'Ensino Fundamental');
+    final module = Module(
+      level: level,
+      code: '1',
+      description: '1º ano',
+      minimumAge: 5,
+      price: 100,
+    );
+    final clazz = Clazz(level: level, module: module, code: '1', capacity: 1);
+    final student = Student(
+      name: Name('Fernando Batista'),
+      cpf: Cpf('383.916.398-60'),
+      birthDate: DateTime(1995, 11, 8),
+    );
+    final request = EnrollRequest(
+      student: student,
+      level: level.code,
+      module: module.code,
+      clazz: clazz.code,
+    );
+    when(() => repository.getStudents()).thenAnswer((_) async => [student]);
+    when(() => repository.getLastEnrolledStudentCode()).thenAnswer((_) async => 1);
+    when(() => repository.getModule(module.code)).thenAnswer((_) async => module);
+    when(() => repository.getClazzes()).thenAnswer((_) async => [clazz]);
+    when(() => repository.getClazzStudents(clazz)).thenAnswer((_) async => [student]);
+
+    //assert
+    expect(() async => await enrollStudent(request), throwsA(isA<StudentAlreadyEnrolled>()));
   });
 }

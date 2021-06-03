@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:eskola/failure.dart';
+
 class Cpf {
   final String value;
 
@@ -95,13 +97,6 @@ class Cpf {
   }
 }
 
-class InvalidCpf implements Exception {
-  final String msg;
-
-  InvalidCpf(this.msg);
-
-  @override
-  String toString() {
-    return msg;
-  }
+class InvalidCpf extends Failure {
+  InvalidCpf(String msg) : super(msg);
 }
