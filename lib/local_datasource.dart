@@ -3,6 +3,7 @@ import 'package:eskola/clazz.dart';
 import 'package:eskola/enroll_student.dart';
 import 'package:eskola/level.dart';
 import 'package:eskola/module.dart';
+import 'package:eskola/student.dart';
 
 abstract class LocalDatasource {
   Future<int> getLastEnrolledStudentCode();
@@ -41,6 +42,7 @@ class LocalDatasourceImpl implements LocalDatasource {
     Clazz(level: modules[2].level, module: modules[2], code: '1', capacity: 30),
   ];
 
+  //todo criar entidade "enrollment"
   static final enrollments = <EnrollRequest>[];
 
   @override

@@ -5,6 +5,7 @@ import 'package:eskola/level.dart';
 import 'package:eskola/module.dart';
 import 'package:eskola/name.dart';
 import 'package:eskola/repository.dart';
+import 'package:eskola/student.dart';
 import 'package:intl/intl.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/expect.dart';

@@ -1,22 +1,8 @@
-import 'package:eskola/age.dart';
-import 'package:eskola/cpf.dart';
 import 'package:eskola/failure.dart';
 import 'package:eskola/module.dart';
-import 'package:eskola/name.dart';
 import 'package:eskola/repository.dart';
+import 'package:eskola/student.dart';
 import 'package:intl/intl.dart';
-
-class Student {
-  final Name name;
-  final Cpf cpf;
-  final DateTime birthDate;
-
-  Student({
-    required this.name,
-    required this.cpf,
-    required this.birthDate,
-  });
-}
 
 class EnrollRequest {
   final Student student;
@@ -56,8 +42,7 @@ class EnrollStudent {
   }
 
   bool _isValidAge(Module module, Student student) {
-    final age = Age(birthDate: student.birthDate);
-    return age.value >= module.minimumAge;
+    return student.age.value >= module.minimumAge;
   }
 
   Future<bool> _hasCapacityOnClazz(EnrollRequest request) async {

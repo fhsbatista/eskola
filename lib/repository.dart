@@ -1,8 +1,8 @@
 import 'package:eskola/clazz.dart';
-import 'package:eskola/enroll_student.dart';
 import 'package:eskola/level.dart';
 import 'package:eskola/local_datasource.dart';
 import 'package:eskola/module.dart';
+import 'package:eskola/student.dart';
 
 abstract class Repository {
   Future<int> getLastEnrolledStudentCode();
