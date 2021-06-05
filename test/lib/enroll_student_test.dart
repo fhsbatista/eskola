@@ -1,6 +1,7 @@
 import 'package:eskola/clazz.dart';
 import 'package:eskola/cpf.dart';
 import 'package:eskola/enroll_student.dart';
+import 'package:eskola/enrollment.dart';
 import 'package:eskola/level.dart';
 import 'package:eskola/module.dart';
 import 'package:eskola/name.dart';
@@ -39,7 +40,7 @@ void main() {
       price: 100,
     );
     final clazz = Clazz(level: level, module: module, code: 'A', capacity: 10);
-    final request = EnrollRequest(
+    final request = Enrollment(
       student: validStudent,
       level: level.code,
       module: module.code,
@@ -86,7 +87,7 @@ void main() {
       cpf: Cpf('383.916.398-60'),
       birthDate: DateTime(2020, 11, 8),
     );
-    final request = EnrollRequest(
+    final request = Enrollment(
       student: student,
       level: level.code,
       module: module.code,
@@ -115,7 +116,7 @@ void main() {
       cpf: Cpf('383.916.398-60'),
       birthDate: DateTime(1995, 11, 8),
     );
-    final request = EnrollRequest(
+    final request = Enrollment(
       student: student,
       level: level.code,
       module: module.code,
@@ -145,7 +146,7 @@ void main() {
       cpf: Cpf('383.916.398-60'),
       birthDate: DateTime(1995, 11, 8),
     );
-    final request = EnrollRequest(
+    final request = Enrollment(
       student: student,
       level: level.code,
       module: module.code,

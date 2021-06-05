@@ -1,29 +1,16 @@
+import 'package:eskola/enrollment.dart';
 import 'package:eskola/failure.dart';
 import 'package:eskola/module.dart';
 import 'package:eskola/repository.dart';
 import 'package:eskola/student.dart';
 import 'package:intl/intl.dart';
 
-class EnrollRequest {
-  final Student student;
-  final String level;
-  final String module;
-  final String clazz;
-
-  EnrollRequest({
-    required this.student,
-    required this.level,
-    required this.module,
-    required this.clazz,
-  });
-}
-
 class EnrollStudent {
   final Repository repository;
 
   EnrollStudent({required this.repository});
 
-  Future<String> call(EnrollRequest request) async {
+  Future<String> call(Enrollment request) async {
     final isStudentAlreadyEnrolled = await _isStudentAlreadyEnrolled(request.student);
     if (isStudentAlreadyEnrolled) throw StudentAlreadyEnrolled();
     final module = await repository.getModule(request.module);
@@ -45,7 +32,7 @@ class EnrollStudent {
     return student.age.value >= module.minimumAge;
   }
 
-  Future<bool> _hasCapacityOnClazz(EnrollRequest request) async {
+  Future<bool> _hasCapacityOnClazz(Enrollment request) async {
     final clazz = (await repository.getClazzes()).firstWhere((e) => e.code == request.clazz);
     final studentsOnClazz = await repository.getClazzStudents(clazz);
     return studentsOnClazz.length < clazz.capacity;
