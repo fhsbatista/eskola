@@ -1,4 +1,4 @@
-import 'package:eskola/clazz.dart';
+import 'package:eskola/classroom.dart';
 import 'package:eskola/level.dart';
 import 'package:eskola/local_datasource.dart';
 import 'package:eskola/module.dart';
@@ -9,8 +9,8 @@ abstract class Repository {
   Future<List<Level>> getLevels();
   Future<List<Module>> getModules();
   Future<Module> getModule(String code);
-  Future<List<Clazz>> getClazzes();
-  Future<List<Student>> getClazzStudents(Clazz clazz);
+  Future<List<Classroom>> getClassrooms();
+  Future<List<Student>> getClassroomStudents(Classroom classroom);
   Future<List<Student>> getStudents();
 }
 
@@ -35,8 +35,8 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<List<Clazz>> getClazzes() {
-    return localDatasource.getClazzes();
+  Future<List<Classroom>> getClassrooms() {
+    return localDatasource.getClassrooms();
   }
 
   @override
@@ -45,8 +45,8 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<List<Student>> getClazzStudents(Clazz clazz) {
-    return localDatasource.getClazzStudents(clazz);
+  Future<List<Student>> getClassroomStudents(Classroom classroom) {
+    return localDatasource.getClassroomsStudents(classroom);
   }
 
   @override

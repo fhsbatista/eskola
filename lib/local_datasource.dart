@@ -1,5 +1,5 @@
 //fazer retornar level, modules e classes;
-import 'package:eskola/clazz.dart';
+import 'package:eskola/classroom.dart';
 import 'package:eskola/enrollment.dart';
 import 'package:eskola/level.dart';
 import 'package:eskola/module.dart';
@@ -14,9 +14,9 @@ abstract class LocalDatasource {
 
   Future<Module> getModule(String code);
 
-  Future<List<Clazz>> getClazzes();
+  Future<List<Classroom>> getClassrooms();
 
-  Future<List<Student>> getClazzStudents(Clazz clazz);
+  Future<List<Student>> getClassroomsStudents(Classroom classroom);
 
   Future<List<Student>> getStudents();
 
@@ -36,13 +36,57 @@ class LocalDatasourceImpl implements LocalDatasource {
     Module(level: levels[2], code: '1', description: '1º Ano', minimumAge: 16, price: 300),
   ];
 
-  static final clazzes = [
-    Clazz(level: modules[0].level, module: modules[0], code: '1', capacity: 30),
-    Clazz(level: modules[1].level, module: modules[1], code: '1', capacity: 30),
-    Clazz(level: modules[2].level, module: modules[2], code: '1', capacity: 30),
+  static final classrooms = [
+    Classroom(
+      level: modules[0].level,
+      module: modules[0],
+      code: '1',
+      capacity: 30,
+      startDate: DateTime(
+        2020,
+        01,
+        01,
+      ),
+      endDate: DateTime(
+        2021,
+        01,
+        01,
+      ),
+    ),
+    Classroom(
+      level: modules[1].level,
+      module: modules[1],
+      code: '1',
+      capacity: 30,
+      startDate: DateTime(
+        2020,
+        01,
+        01,
+      ),
+      endDate: DateTime(
+        2021,
+        01,
+        01,
+      ),
+    ),
+    Classroom(
+      level: modules[2].level,
+      module: modules[2],
+      code: '1',
+      capacity: 30,
+      startDate: DateTime(
+        2020,
+        01,
+        01,
+      ),
+      endDate: DateTime(
+        2021,
+        01,
+        01,
+      ),
+    ),
   ];
 
-  //todo criar entidade "enrollment"
   static final enrollments = <Enrollment>[];
 
   @override
@@ -62,8 +106,8 @@ class LocalDatasourceImpl implements LocalDatasource {
   }
 
   @override
-  Future<List<Clazz>> getClazzes() {
-    return Future.value(clazzes);
+  Future<List<Classroom>> getClassrooms() {
+    return Future.value(classrooms);
   }
 
   @override
@@ -72,9 +116,9 @@ class LocalDatasourceImpl implements LocalDatasource {
   }
 
   @override
-  Future<List<Student>> getClazzStudents(Clazz clazz) {
+  Future<List<Student>> getClassroomsStudents(Classroom classroom) {
     return Future.value(
-      enrollments.where((e) => e.clazz == clazz.code).map((e) => e.student).toList(),
+      enrollments.where((e) => e.classroom == classroom.code).map((e) => e.student).toList(),
     );
   }
 

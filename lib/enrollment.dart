@@ -4,12 +4,12 @@ class Enrollment {
   final Student student;
   final String level;
   final String module;
-  final String clazz;
+  final String classroom;
 
   Enrollment({
     required this.student,
     required this.level,
     required this.module,
-    required this.clazz,
+    required this.classroom,
   });
 }

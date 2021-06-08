@@ -10,16 +10,27 @@ class EnrollStudent {
 
   EnrollStudent({required this.repository});
 
-  Future<String> call(Enrollment request) async {
-    final isStudentAlreadyEnrolled = await _isStudentAlreadyEnrolled(request.student);
+  Future<String> call(Enrollment enrollment) async {
+    final classrooms = await repository.getClassrooms();
+    final classroom = classrooms.singleWhere(
+      (e) =>
+          e.level.code == enrollment.level &&
+          e.module.code == enrollment.module &&
+          e.code == enrollment.classroom,
+    );
+    if (classroom.isFinished) throw AlreadyFinishedClass();
+    if (classroom.isCompleted25Percent) throw Completed25PercentClass();
+    final isCompleted25PercentClassroom = false;
+    if (isCompleted25PercentClassroom) throw Completed25PercentClass();
+    final isStudentAlreadyEnrolled = await _isStudentAlreadyEnrolled(enrollment.student);
     if (isStudentAlreadyEnrolled) throw StudentAlreadyEnrolled();
-    final module = await repository.getModule(request.module);
-    if (!_isValidAge(module, request.student)) throw InvalidAge();
-    final hasCapacityOnClazz = await _hasCapacityOnClazz(request);
-    if (!hasCapacityOnClazz) throw OutOfCapacity();
+    final module = await repository.getModule(enrollment.module);
+    if (!_isValidAge(module, enrollment.student)) throw InvalidAge();
+    final hasCapacityOnClassroom = await _hasCapacityOnClassroom(enrollment);
+    if (!hasCapacityOnClassroom) throw OutOfCapacity();
     final currentYear = DateFormat('yyyy').format(DateTime.now());
     final code = await _getNextCode();
-    return '$currentYear${request.level}${request.module}${request.clazz}$code';
+    return '$currentYear${enrollment.level}${enrollment.module}${enrollment.classroom}$code';
   }
 
   Future<bool> _isStudentAlreadyEnrolled(Student student) async {
@@ -32,10 +43,11 @@ class EnrollStudent {
     return student.age.value >= module.minimumAge;
   }
 
-  Future<bool> _hasCapacityOnClazz(Enrollment request) async {
-    final clazz = (await repository.getClazzes()).firstWhere((e) => e.code == request.clazz);
-    final studentsOnClazz = await repository.getClazzStudents(clazz);
-    return studentsOnClazz.length < clazz.capacity;
+  Future<bool> _hasCapacityOnClassroom(Enrollment request) async {
+    final classroom =
+        (await repository.getClassrooms()).firstWhere((e) => e.code == request.classroom);
+    final studentsOnClassroom = await repository.getClassroomStudents(classroom);
+    return studentsOnClassroom.length < classroom.capacity;
   }
 
   Future<int> _getNextCode() async {
@@ -49,9 +61,17 @@ class InvalidAge extends Failure {
 }
 
 class OutOfCapacity extends Failure {
-  OutOfCapacity() : super('Clazz has no capacity for more students');
+  OutOfCapacity() : super('Classroom has no capacity for more students');
 }
 
 class StudentAlreadyEnrolled extends Failure {
   StudentAlreadyEnrolled() : super('Attempt to enroll a duplicated student');
+}
+
+class AlreadyFinishedClass extends Failure {
+  AlreadyFinishedClass() : super('This class is already finished');
+}
+
+class Completed25PercentClass extends Failure {
+  Completed25PercentClass() : super('This class is 25% completed already');
 }
