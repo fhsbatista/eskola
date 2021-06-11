@@ -5,6 +5,7 @@ import 'package:eskola/module.dart';
 import 'package:eskola/student.dart';
 
 abstract class Repository {
+  //criar repositorios para level, modules etc e criar os metodos "findbycode" para arrumar o usecase
   Future<int> getLastEnrolledStudentCode();
   Future<List<Level>> getLevels();
   Future<List<Module>> getModules();

@@ -1,12 +1,17 @@
+import 'package:eskola/classroom.dart';
+import 'package:eskola/level.dart';
+import 'package:eskola/module.dart';
 import 'package:eskola/student.dart';
 
 class Enrollment {
+  final String code;
   final Student student;
-  final String level;
-  final String module;
-  final String classroom;
+  final Level level;
+  final Module module;
+  final Classroom classroom;
 
   Enrollment({
+    required this.code,
     required this.student,
     required this.level,
     required this.module,
