@@ -1,8 +1,10 @@
+import 'package:eskola/date.dart';
+
 class Age {
   late final int value;
 
-  Age({required DateTime birthDate, DateTime? referenceDate}) {
-    value = _calculateAge(birthDate, referenceDate ?? DateTime.now());
+  Age({required Date birthDate, Date? referenceDate}) {
+    value = _calculateAge(birthDate.value, referenceDate?.value ?? DateTime.now());
   }
 
   int _calculateAge(DateTime birthDate, DateTime referenceDate) {

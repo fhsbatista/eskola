@@ -1,9 +1,11 @@
 import 'package:eskola/classroom.dart';
 import 'package:eskola/classroom_repository.dart';
 import 'package:eskola/cpf.dart';
+import 'package:eskola/date.dart';
 import 'package:eskola/enroll_student.dart';
 import 'package:eskola/enrollment.dart';
 import 'package:eskola/enrollment_repository.dart';
+import 'package:eskola/enrollment_request_dto.dart';
 import 'package:eskola/level.dart';
 import 'package:eskola/level_repository.dart';
 import 'package:eskola/module.dart';
@@ -45,12 +47,6 @@ void main() {
     when(() => enrollmentRepository.findByCpf(any())).thenAnswer((_) async => null);
   });
 
-  final validStudent = Student(
-    name: Name('Fernando Batista'),
-    cpf: Cpf('383.916.398-60'),
-    birthDate: DateTime(1995, 11, 8),
-  );
-
   test('should generate code for the enrolled student', () async {
     //arrange
     final level = Level(code: 'EM', description: 'Ensino Fundamental');
@@ -77,16 +73,18 @@ void main() {
         01,
       ),
     );
-    final request = EnrollRequest(
-      student: validStudent,
-      level: level.code,
-      module: module.code,
-      classroom: classroom.code,
-    );
     final student = Student(
       name: Name('Fernando Batista'),
       cpf: Cpf('383.916.398-60'),
-      birthDate: DateTime(2020, 11, 8),
+      birthDate: Date('08/11/1995'),
+    );
+    final request = EnrollmentRequestDTO(
+      studentName: student.name.value,
+      studentCpf: student.cpf.value,
+      studentBirthDate: '08/11/1995',
+      levelCode: level.code,
+      moduleCode: module.code,
+      classroomCode: classroom.code,
     );
     final enrolledStudentsNumber = 12;
     when(() => enrollmentRepository.count()).thenAnswer((_) async => enrolledStudentsNumber);
@@ -95,8 +93,17 @@ void main() {
         .thenAnswer((_) async => module);
     when(() => classroomRepository.findByCode(level.code, module.code, classroom.code))
         .thenAnswer((_) async => classroom);
-    when(() => enrollmentRepository.getStudentsByClassroom(classroom))
-        .thenAnswer((_) async => [student]);
+    when(() => enrollmentRepository.getStudentsByClassroom(classroom)).thenAnswer(
+      (_) async {
+        return [
+          Student(
+            name: Name('Fernando Batista'),
+            cpf: Cpf('383.916.398-60'),
+            birthDate: Date('08/11/2020'),
+          )
+        ];
+      },
+    );
 
     //act
     final enrollment = await enrollStudent(request);
@@ -139,13 +146,15 @@ void main() {
     final student = Student(
       name: Name('Fernando Batista'),
       cpf: Cpf('383.916.398-60'),
-      birthDate: DateTime(2020, 11, 8),
+      birthDate: Date('08/11/2020'),
     );
-    final request = EnrollRequest(
-      student: student,
-      level: level.code,
-      module: module.code,
-      classroom: classroom.code,
+    final request = EnrollmentRequestDTO(
+      studentName: student.name.value,
+      studentCpf: student.cpf.value,
+      studentBirthDate: '08/11/2020',
+      levelCode: level.code,
+      moduleCode: module.code,
+      classroomCode: classroom.code,
     );
     when(() => enrollmentRepository.count()).thenAnswer((_) async => 1);
     when(() => levelRepository.findByCode(level.code)).thenAnswer((_) async => level);
@@ -191,13 +200,15 @@ void main() {
     final student = Student(
       name: Name('Fernando Batista'),
       cpf: Cpf('383.916.398-60'),
-      birthDate: DateTime(1995, 11, 8),
+      birthDate: Date('08/11/1995'),
     );
-    final request = EnrollRequest(
-      student: student,
-      level: level.code,
-      module: module.code,
-      classroom: classroom.code,
+    final request = EnrollmentRequestDTO(
+      studentName: student.name.value,
+      studentCpf: student.cpf.value,
+      studentBirthDate: '08/11/1995',
+      levelCode: level.code,
+      moduleCode: module.code,
+      classroomCode: classroom.code,
     );
     when(() => enrollmentRepository.count()).thenAnswer((_) async => 1);
     when(() => levelRepository.findByCode(level.code)).thenAnswer((_) async => level);
@@ -241,13 +252,15 @@ void main() {
     final student = Student(
       name: Name('Fernando Batista'),
       cpf: Cpf('383.916.398-60'),
-      birthDate: DateTime(1995, 11, 8),
+      birthDate: Date('08/11/1995'),
     );
-    final request = EnrollRequest(
-      student: student,
-      level: level.code,
-      module: module.code,
-      classroom: classroom.code,
+    final request = EnrollmentRequestDTO(
+      studentName: student.name.value,
+      studentCpf: student.cpf.value,
+      studentBirthDate: '08/11/1995',
+      levelCode: level.code,
+      moduleCode: module.code,
+      classroomCode: classroom.code,
     );
     final enrollment = Enrollment(
       code: '123',
@@ -295,13 +308,15 @@ void main() {
     final student = Student(
       name: Name('Fernando Batista'),
       cpf: Cpf('383.916.398-60'),
-      birthDate: DateTime(1995, 11, 8),
+      birthDate: Date('08/11/1995'),
     );
-    final request = EnrollRequest(
-      student: student,
-      level: level.code,
-      module: module.code,
-      classroom: classroom.code,
+    final request = EnrollmentRequestDTO(
+      studentName: student.name.value,
+      studentCpf: student.cpf.value,
+      studentBirthDate: '08/11/1995',
+      levelCode: level.code,
+      moduleCode: module.code,
+      classroomCode: classroom.code,
     );
     when(() => enrollmentRepository.count()).thenAnswer((_) async => 1);
     when(() => levelRepository.findByCode(level.code)).thenAnswer((_) async => level);
@@ -337,18 +352,20 @@ void main() {
       code: '1',
       capacity: 1,
       startDate: DateTime(2021, 5, 18),
-      endDate: DateTime(2021, 6, 12),
+      endDate: DateTime(2021, 8, 12),
     );
     final student = Student(
       name: Name('Fernando Batista'),
       cpf: Cpf('383.916.398-60'),
-      birthDate: DateTime(1995, 11, 8),
+      birthDate: Date('08/11/1995'),
     );
-    final request = EnrollRequest(
-      student: student,
-      level: level.code,
-      module: module.code,
-      classroom: classroom.code,
+    final request = EnrollmentRequestDTO(
+      studentName: student.name.value,
+      studentCpf: student.cpf.value,
+      studentBirthDate: '08/11/1995',
+      levelCode: level.code,
+      moduleCode: module.code,
+      classroomCode: classroom.code,
     );
     when(() => enrollmentRepository.count()).thenAnswer((_) async => 1);
     when(() => levelRepository.findByCode(level.code)).thenAnswer((_) async => level);
@@ -387,13 +404,15 @@ void main() {
 //    final student = Student(
 //      name: Name('Fernando Batista'),
 //      cpf: Cpf('383.916.398-60'),
-//      birthDate: DateTime(1995, 11, 8),
+//      birthDate: Date('08/11/1995'),
 //    );
-//    final request = Enrollment(
-//      student: student,
-//      level: level.code,
-//      module: module.code,
-//      classroom: classroom.code,
+//    final request = EnrollmentRequestDTO(
+//      studentName: student.name.value,
+//      studentCpf: student.cpf.value,
+//      studentBirthDate: '08/11/1995',
+//      levelCode: level.code,
+//      moduleCode: module.code,
+//      classroomCode: classroom.code,
 //    );
 //    when(() => repository.getStudents()).thenAnswer((_) async => [student]);
 //    when(() => repository.getLastEnrolledStudentCode()).thenAnswer((_) async => 1);

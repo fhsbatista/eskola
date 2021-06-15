@@ -9,6 +9,7 @@ class Enrollment {
   final Level level;
   final Module module;
   final Classroom classroom;
+  //proximo passo: gerar os invoices.
 
   Enrollment({
     required this.code,

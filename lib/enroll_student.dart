@@ -1,11 +1,15 @@
 import 'package:eskola/classroom.dart';
 import 'package:eskola/classroom_repository.dart';
+import 'package:eskola/cpf.dart';
+import 'package:eskola/date.dart';
 import 'package:eskola/enrollment.dart';
 import 'package:eskola/enrollment_repository.dart';
+import 'package:eskola/enrollment_request_dto.dart';
 import 'package:eskola/failure.dart';
 import 'package:eskola/level_repository.dart';
 import 'package:eskola/module.dart';
 import 'package:eskola/module_repository.dart';
+import 'package:eskola/name.dart';
 import 'package:eskola/student.dart';
 import 'package:intl/intl.dart';
 
@@ -22,29 +26,34 @@ class EnrollStudent {
     required this.enrollmentRepository,
   });
 
-  Future<Enrollment> call(EnrollRequest request) async {
-    final level = await levelRepository.findByCode(request.level);
-    final module = await moduleRepository.findByCode(request.level, request.module);
+  Future<Enrollment> call(EnrollmentRequestDTO request) async {
+    final level = await levelRepository.findByCode(request.levelCode);
+    final module = await moduleRepository.findByCode(request.levelCode, request.moduleCode);
     final classroom = await classroomRepository.findByCode(
-      request.level,
-      request.module,
-      request.classroom,
+      request.levelCode,
+      request.moduleCode,
+      request.classroomCode,
+    );
+    final student = Student(
+      name: Name(request.studentName),
+      cpf: Cpf(request.studentCpf),
+      birthDate: Date(request.studentBirthDate),
     );
     if (classroom.isFinished) throw AlreadyFinishedClass();
     if (classroom.isCompleted25Percent) throw Completed25PercentClass();
     final isCompleted25PercentClassroom = false;
     if (isCompleted25PercentClassroom) throw Completed25PercentClass();
-    final isStudentAlreadyEnrolled = await _isStudentAlreadyEnrolled(request.student);
+    final isStudentAlreadyEnrolled = await _isStudentAlreadyEnrolled(student);
     if (isStudentAlreadyEnrolled) throw StudentAlreadyEnrolled();
-    if (!_isValidAge(module, request.student)) throw InvalidAge();
+    if (!_isValidAge(module, student)) throw InvalidAge();
     final hasCapacityOnClassroom = await _hasCapacityOnClassroom(classroom);
     if (!hasCapacityOnClassroom) throw OutOfCapacity();
     final currentYear = DateFormat('yyyy').format(DateTime.now());
     final sequence = await _getNextEnrollmentSequence();
-    final code = '$currentYear${level.code}${request.module}${request.classroom}$sequence';
+    final code = '$currentYear${level.code}${module.code}${classroom.code}$sequence';
     return Enrollment(
       code: code,
-      student: request.student,
+      student: student,
       level: level,
       module: module,
       classroom: classroom,
@@ -69,20 +78,6 @@ class EnrollStudent {
     final lastEnrolledStudentCode = await enrollmentRepository.count();
     return lastEnrolledStudentCode + 1;
   }
-}
-
-class EnrollRequest {
-  final Student student;
-  final String level;
-  final String module;
-  final String classroom;
-
-  EnrollRequest({
-    required this.student,
-    required this.level,
-    required this.module,
-    required this.classroom,
-  });
 }
 
 class InvalidAge extends Failure {
