@@ -6,6 +6,7 @@ class Module {
   final String description;
   final int minimumAge;
   final double price;
+  final int installments;
 
   Module({
     required this.level,
@@ -13,5 +14,6 @@ class Module {
     required this.description,
     required this.minimumAge,
     required this.price,
+    required this.installments,
   });
 }

@@ -56,6 +56,7 @@ void main() {
       description: '1º ano',
       minimumAge: 5,
       price: 100,
+      installments: 12,
     );
     final classroom = Classroom(
       level: level,
@@ -126,6 +127,7 @@ void main() {
       description: '1º ano',
       minimumAge: 5,
       price: 100,
+      installments: 12,
     );
     final classroom = Classroom(
       level: level,
@@ -180,6 +182,7 @@ void main() {
       description: '1º ano',
       minimumAge: 5,
       price: 100,
+      installments: 12,
     );
     final classroom = Classroom(
       level: level,
@@ -232,6 +235,7 @@ void main() {
       description: '1º ano',
       minimumAge: 5,
       price: 100,
+      installments: 12,
     );
     final classroom = Classroom(
       level: level,
@@ -268,6 +272,7 @@ void main() {
       level: level,
       module: module,
       classroom: classroom,
+      invoices: [],
     );
     when(() => enrollmentRepository.count()).thenAnswer((_) async => 1);
     when(() => enrollmentRepository.findByCpf(student.cpf.value))
@@ -296,6 +301,7 @@ void main() {
       description: '1º ano',
       minimumAge: 5,
       price: 100,
+      installments: 12,
     );
     final classroom = Classroom(
       level: level,
@@ -345,6 +351,7 @@ void main() {
       description: '1º ano',
       minimumAge: 5,
       price: 100,
+      installments: 12,
     );
     final classroom = Classroom(
       level: level,
@@ -381,53 +388,56 @@ void main() {
     expect(() async => await enrollStudent(request), throwsA(isA<Completed25PercentClass>()));
   });
 
-//  test(
-//      'should generate the invoices based on the number of installments, rounding each amount and applying the rest in the last invoice',
-//      () async {
-//    //arrange
-//    final level = Level(code: 'EF', description: 'Ensino Fundamental');
-//    final module = Module(
-//      level: level,
-//      code: '1',
-//      description: '1º ano',
-//      minimumAge: 5,
-//      price: 1000,
-//    );
-//    final classroom = Classroom(
-//      level: level,
-//      module: module,
-//      code: '1',
-//      capacity: 1,
-//      startDate: DateTime(2021, 5, 18),
-//      endDate: DateTime(2021, 6, 12),
-//    );
-//    final student = Student(
-//      name: Name('Fernando Batista'),
-//      cpf: Cpf('383.916.398-60'),
-//      birthDate: Date('08/11/1995'),
-//    );
-//    final request = EnrollmentRequestDTO(
-//      studentName: student.name.value,
-//      studentCpf: student.cpf.value,
-//      studentBirthDate: '08/11/1995',
-//      levelCode: level.code,
-//      moduleCode: module.code,
-//      classroomCode: classroom.code,
-//    );
-//    when(() => repository.getStudents()).thenAnswer((_) async => [student]);
-//    when(() => repository.getLastEnrolledStudentCode()).thenAnswer((_) async => 1);
-//    when(() => repository.getModule(module.code)).thenAnswer((_) async => module);
-//    when(() => repository.getClassrooms()).thenAnswer((_) async => [classroom]);
-//    when(() => repository.getClassroomStudents(classroom)).thenAnswer((_) async => [student]);
-//
-//    //act
-//    final enrollmentCode = await enrollStudent(request);
-//
-//    //assert
-//    //como testar os invoices? ver na aula gravada
-////    verify(() => repository.)
-////    expect(invoices.last, 83.37);
-////    final sumOfInvoices = invoices.fold(0, (previous, current) => previous ?? 0 + current);
-////    expect(sumOfInvoices, 1000);
-//  });
+  test(
+      'should generate the invoices based on the number of installments, rounding each amount and applying the rest in the last invoice',
+      () async {
+    //arrange
+    final level = Level(code: 'EF', description: 'Ensino Fundamental');
+    final module = Module(
+      level: level,
+      code: '1',
+      description: '1º ano',
+      minimumAge: 5,
+      price: 1000,
+      installments: 12,
+    );
+    final classroom = Classroom(
+      level: level,
+      module: module,
+      code: '1',
+      capacity: 1,
+      startDate: DateTime(2021, 5, 18),
+      endDate: DateTime(2022, 7, 12),
+    );
+    final student = Student(
+      name: Name('Fernando Batista'),
+      cpf: Cpf('383.916.398-60'),
+      birthDate: Date('08/11/1995'),
+    );
+    final request = EnrollmentRequestDTO(
+      studentName: student.name.value,
+      studentCpf: student.cpf.value,
+      studentBirthDate: '08/11/1995',
+      levelCode: level.code,
+      moduleCode: module.code,
+      classroomCode: classroom.code,
+    );
+    when(() => enrollmentRepository.count()).thenAnswer((_) async => 12);
+    when(() => levelRepository.findByCode(level.code)).thenAnswer((_) async => level);
+    when(() => moduleRepository.findByCode(level.code, module.code))
+        .thenAnswer((_) async => module);
+    when(() => classroomRepository.findByCode(level.code, module.code, classroom.code))
+        .thenAnswer((_) async => classroom);
+    when(() => enrollmentRepository.getStudentsByClassroom(classroom)).thenAnswer((_) async => []);
+
+    //act
+    final enrollment = await enrollStudent(request);
+
+    //assert
+    expect(enrollment.invoices.last, 83.37);
+    var sumOfInvoices = 0.0;
+    enrollment.invoices.forEach((element) => sumOfInvoices += element);
+    sumOfInvoices = double.parse(sumOfInvoices.toStringAsFixed(2));
+    expect(sumOfInvoices, 1000);
+  });
 }

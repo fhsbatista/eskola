@@ -31,9 +31,30 @@ class LocalDatasourceImpl implements LocalDatasource {
   ];
 
   static final modules = [
-    Module(level: levels[0], code: '1', description: '1º Ano', minimumAge: 5, price: 100),
-    Module(level: levels[1], code: '1', description: '1º Ano', minimumAge: 14, price: 200),
-    Module(level: levels[2], code: '1', description: '1º Ano', minimumAge: 16, price: 300),
+    Module(
+      level: levels[0],
+      code: '1',
+      description: '1º Ano',
+      minimumAge: 5,
+      price: 100,
+      installments: 3,
+    ),
+    Module(
+      level: levels[1],
+      code: '1',
+      description: '1º Ano',
+      minimumAge: 14,
+      price: 200,
+      installments: 3,
+    ),
+    Module(
+      level: levels[2],
+      code: '1',
+      description: '1º Ano',
+      minimumAge: 16,
+      price: 300,
+      installments: 3,
+    ),
   ];
 
   static final classrooms = [

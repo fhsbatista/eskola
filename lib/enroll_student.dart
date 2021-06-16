@@ -51,12 +51,14 @@ class EnrollStudent {
     final currentYear = DateFormat('yyyy').format(DateTime.now());
     final sequence = await _getNextEnrollmentSequence();
     final code = '$currentYear${level.code}${module.code}${classroom.code}$sequence';
+    final invoices = _getInvoices(module);
     return Enrollment(
       code: code,
       student: student,
       level: level,
       module: module,
       classroom: classroom,
+      invoices: invoices,
     );
   }
 
@@ -77,6 +79,23 @@ class EnrollStudent {
   Future<int> _getNextEnrollmentSequence() async {
     final lastEnrolledStudentCode = await enrollmentRepository.count();
     return lastEnrolledStudentCode + 1;
+  }
+
+  //TODO This method is a bit hard to understand. Refactor it later. (this method should be in enrollment entity actually)
+  List<double> _getInvoices(Module module) {
+    final installmentFloorValue =
+        double.parse((module.price / module.installments).toStringAsFixed(2));
+    final lastInstallmentValue = double.parse(
+        (module.price - (installmentFloorValue * (module.installments - 1))).toStringAsFixed(2));
+    final invoices = <double>[];
+    for (var i = 1; i <= module.installments; i++) {
+      if (i == module.installments) {
+        invoices.add(lastInstallmentValue);
+      } else {
+        invoices.add(installmentFloorValue);
+      }
+    }
+    return invoices;
   }
 }
 

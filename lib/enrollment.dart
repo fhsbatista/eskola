@@ -9,7 +9,7 @@ class Enrollment {
   final Level level;
   final Module module;
   final Classroom classroom;
-  //proximo passo: gerar os invoices.
+  final List<double> invoices;
 
   Enrollment({
     required this.code,
@@ -17,5 +17,6 @@ class Enrollment {
     required this.level,
     required this.module,
     required this.classroom,
+    required this.invoices,
   });
 }
