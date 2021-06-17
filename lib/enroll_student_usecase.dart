@@ -13,13 +13,13 @@ import 'package:eskola/name.dart';
 import 'package:eskola/student.dart';
 import 'package:intl/intl.dart';
 
-class EnrollStudent {
+class EnrollStudentUsecase {
   final LevelRepository levelRepository;
   final ModuleRepository moduleRepository;
   final ClassroomRepository classroomRepository;
   final EnrollmentRepository enrollmentRepository;
 
-  EnrollStudent({
+  EnrollStudentUsecase({
     required this.levelRepository,
     required this.moduleRepository,
     required this.classroomRepository,

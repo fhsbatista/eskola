@@ -2,7 +2,7 @@ import 'package:eskola/classroom.dart';
 import 'package:eskola/classroom_repository.dart';
 import 'package:eskola/cpf.dart';
 import 'package:eskola/date.dart';
-import 'package:eskola/enroll_student.dart';
+import 'package:eskola/enroll_student_usecase.dart';
 import 'package:eskola/enrollment.dart';
 import 'package:eskola/enrollment_repository.dart';
 import 'package:eskola/enrollment_request_dto.dart';
@@ -30,7 +30,7 @@ void main() {
   late MockModuleRepository moduleRepository;
   late MockClassroomRepository classroomRepository;
   late MockEnrollmentRepository enrollmentRepository;
-  late EnrollStudent enrollStudent;
+  late EnrollStudentUsecase enrollStudent;
   //todo inverter dependencia da data, do contrário os testes ficam inviáveis
   //todo refaturar o usecase para tirar coisas fora de responsabilidae (ex: codigo da matricula e idade minima)
   setUpAll(() {
@@ -38,7 +38,7 @@ void main() {
     moduleRepository = MockModuleRepository();
     classroomRepository = MockClassroomRepository();
     enrollmentRepository = MockEnrollmentRepository();
-    enrollStudent = EnrollStudent(
+    enrollStudent = EnrollStudentUsecase(
       levelRepository: levelRepository,
       moduleRepository: moduleRepository,
       classroomRepository: classroomRepository,
