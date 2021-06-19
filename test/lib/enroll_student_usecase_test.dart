@@ -429,14 +429,15 @@ void main() {
     when(() => classroomRepository.findByCode(level.code, module.code, classroom.code))
         .thenAnswer((_) async => classroom);
     when(() => enrollmentRepository.getStudentsByClassroom(classroom)).thenAnswer((_) async => []);
+    when(() => enrollmentRepository.findByCpf(any())).thenAnswer((_) async => null);
 
     //act
     final enrollment = await enrollStudent(request);
 
     //assert
-    expect(enrollment.invoices.last, 83.37);
+    expect(enrollment.invoices.last.amount, 83.37);
     var sumOfInvoices = 0.0;
-    enrollment.invoices.forEach((element) => sumOfInvoices += element);
+    enrollment.invoices.forEach((element) => sumOfInvoices += element.amount);
     sumOfInvoices = double.parse(sumOfInvoices.toStringAsFixed(2));
     expect(sumOfInvoices, 1000);
   });

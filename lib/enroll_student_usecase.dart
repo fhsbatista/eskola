@@ -6,6 +6,7 @@ import 'package:eskola/enrollment.dart';
 import 'package:eskola/enrollment_repository.dart';
 import 'package:eskola/enrollment_request_dto.dart';
 import 'package:eskola/failure.dart';
+import 'package:eskola/invoice.dart';
 import 'package:eskola/level_repository.dart';
 import 'package:eskola/module.dart';
 import 'package:eskola/module_repository.dart';
@@ -82,17 +83,17 @@ class EnrollStudentUsecase {
   }
 
   //TODO This method is a bit hard to understand. Refactor it later. (this method should be in enrollment entity actually)
-  List<double> _getInvoices(Module module) {
+  List<Invoice> _getInvoices(Module module) {
     final installmentFloorValue =
         double.parse((module.price / module.installments).toStringAsFixed(2));
     final lastInstallmentValue = double.parse(
         (module.price - (installmentFloorValue * (module.installments - 1))).toStringAsFixed(2));
-    final invoices = <double>[];
+    final invoices = <Invoice>[];
     for (var i = 1; i <= module.installments; i++) {
       if (i == module.installments) {
-        invoices.add(lastInstallmentValue);
+        invoices.add(Invoice(amount: lastInstallmentValue));
       } else {
-        invoices.add(installmentFloorValue);
+        invoices.add(Invoice(amount: installmentFloorValue));
       }
     }
     return invoices;
